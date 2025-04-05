@@ -43,7 +43,7 @@ Este projeto é um e-commerce desenvolvido com React, utilizando as mais moderna
 1. Clone o repositório
 
 ```bash
-git clone [https://github.com/Neto002/pd-entrega-frontend-react-infnet]
+git clone https://github.com/Neto002/pd-entrega-frontend-react-infnet
 ```
 
 2. Instale as dependências
