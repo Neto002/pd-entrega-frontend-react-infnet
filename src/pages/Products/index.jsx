@@ -6,10 +6,11 @@ import { useCart } from "../../contexts/CartContext";
 import ProductFilters from "../../components/ProductFilters";
 import { getProducts } from "../../services/productsService";
 import { capitalize } from "../../util/format";
-
+import { useSelector } from "react-redux";
 export default function Products() {
   const { categoria } = useParams();
   const { addToCart } = useCart();
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [filters, setFilters] = useState({
     categories: categoria ? [categoria] : [],
     priceRange: [0, 1000],
@@ -49,6 +50,12 @@ export default function Products() {
   });
 
   const handleAddToCart = (product) => {
+    if (!isAuthenticated) {
+      toast.error(
+        "Você precisa estar logado para adicionar produtos ao carrinho"
+      );
+      return;
+    }
     addToCart(product);
     toast.success("Produto adicionado ao carrinho!", {
       duration: 2000,
@@ -89,7 +96,7 @@ export default function Products() {
                   <img
                     src={product.image}
                     alt={product.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-fill"
                   />
                 </div>
                 <div className="p-4">

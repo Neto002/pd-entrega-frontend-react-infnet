@@ -6,8 +6,10 @@ import { capitalize } from "../../util/format";
 import { Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 export default function Home() {
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,6 +35,12 @@ export default function Home() {
   ];
 
   const handleAddToCart = (product) => {
+    if (!isAuthenticated) {
+      toast.error(
+        "Você precisa estar logado para adicionar produtos ao carrinho"
+      );
+      return;
+    }
     addToCart(product);
     toast.success("Produto adicionado ao carrinho!", {
       duration: 2000,

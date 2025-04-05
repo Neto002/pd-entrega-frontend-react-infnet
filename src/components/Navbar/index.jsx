@@ -15,7 +15,6 @@ import { logout } from "../../store/slices/authSlice";
 export default function Navbar() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
   const [showCategories, setShowCategories] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -39,7 +38,6 @@ export default function Navbar() {
 
   const handleLogout = () => {
     dispatch(logout());
-    setIsLoggedIn(false);
   };
 
   // Adicionar e remover o event listener para cliques fora do menu
@@ -123,11 +121,16 @@ export default function Navbar() {
 
           {/* Carrinho, Login e Tema - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/carrinho" className="text-gray-700 hover:text-gray-900">
-              <FaShoppingCart className="h-6 w-6" />
-            </Link>
+            {isAuthenticated && (
+              <Link
+                to="/carrinho"
+                className="text-gray-700 hover:text-gray-900"
+              >
+                <FaShoppingCart className="h-6 w-6" />
+              </Link>
+            )}
 
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <div className="relative user-menu-container">
                 <button
                   className="text-gray-700 hover:text-gray-900"
@@ -153,11 +156,7 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="text-gray-700 hover:text-gray-900"
-                onClick={() => setIsLoggedIn(true)}
-              >
+              <Link to="/login" className="text-gray-700 hover:text-gray-900">
                 <FaUser className="h-6 w-6" />
               </Link>
             )}
@@ -201,14 +200,16 @@ export default function Navbar() {
 
               {/* Carrinho, Login e Tema Mobile */}
               <div className="flex items-center space-x-4 px-3 py-2">
-                <Link
-                  to="/carrinho"
-                  className="text-gray-700 hover:text-gray-900"
-                >
-                  <FaShoppingCart className="h-6 w-6" />
-                </Link>
+                {isAuthenticated && (
+                  <Link
+                    to="/carrinho"
+                    className="text-gray-700 hover:text-gray-900"
+                  >
+                    <FaShoppingCart className="h-6 w-6" />
+                  </Link>
+                )}
 
-                {isLoggedIn ? (
+                {isAuthenticated ? (
                   <button
                     className="text-gray-700 hover:text-gray-900"
                     onClick={handleLogout}
@@ -222,7 +223,6 @@ export default function Navbar() {
                   <Link
                     to="/login"
                     className="text-gray-700 hover:text-gray-900"
-                    onClick={() => setIsLoggedIn(true)}
                   >
                     <FaUser className="h-6 w-6" />
                   </Link>
