@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaShoppingCart,
@@ -7,27 +7,39 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { getCategories } from "../../services/productsService";
+import { capitalize } from "../../util/format";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../store/slices/authSlice";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated);
   const [showCategories, setShowCategories] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
 
-  const categories = [
-    "Eletrônicos",
-    "Roupas",
-    "Acessórios",
-    "Casa e Decoração",
-    "Esportes",
-    "Livros",
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+
+    fetchCategories();
+  }, []);
 
   // Função para fechar o menu do usuário quando clicar fora dele
   const handleClickOutside = (e) => {
     if (isUserMenuOpen && !e.target.closest(".user-menu-container")) {
       setIsUserMenuOpen(false);
     }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setIsLoggedIn(false);
   };
 
   // Adicionar e remover o event listener para cliques fora do menu
@@ -90,16 +102,23 @@ export default function Navbar() {
                     {categories.map((category) => (
                       <Link
                         key={category}
-                        to={`/categoria/${category.toLowerCase()}`}
+                        to={`/produtos/${category.toLowerCase()}`}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        {category}
+                        {capitalize(category)}
                       </Link>
                     ))}
                   </div>
                 </div>
               )}
             </div>
+
+            <Link
+              to="/produtos"
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+            >
+              Produtos
+            </Link>
           </div>
 
           {/* Carrinho, Login e Tema - Desktop */}
@@ -123,7 +142,7 @@ export default function Navbar() {
                   <div className="absolute right-0 w-48 mt-2 py-2 bg-white rounded-md shadow-xl z-50">
                     <button
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsLoggedIn(false)}
+                      onClick={handleLogout}
                     >
                       <div className="flex items-center">
                         <FaSignOutAlt className="mr-2" />
@@ -192,7 +211,7 @@ export default function Navbar() {
                 {isLoggedIn ? (
                   <button
                     className="text-gray-700 hover:text-gray-900"
-                    onClick={() => setIsLoggedIn(false)}
+                    onClick={handleLogout}
                   >
                     <div className="flex items-center">
                       <FaSignOutAlt className="mr-2" />

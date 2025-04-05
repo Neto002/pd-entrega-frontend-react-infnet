@@ -1,32 +1,35 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+} from "../../store/slices/authSlice";
+import { login } from "../../services/authService";
+import toast from "react-hot-toast";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(loginStart());
 
-    // Validação simples
-    if (!email || !password) {
-      setError("Por favor, preencha todos os campos");
-      return;
+    try {
+      const data = await login(username, password);
+      dispatch(loginSuccess(data));
+      toast.success("Login realizado com sucesso!");
+      navigate("/");
+    } catch (error) {
+      dispatch(loginFailure(error.message));
+      toast.error(error.message || "Erro ao fazer login");
     }
-
-    // Aqui você implementaria a lógica real de autenticação
-    // Por enquanto, apenas simulamos um login bem-sucedido
-    console.log("Tentativa de login com:", { email, password });
-
-    // Limpa o formulário e mensagens de erro
-    setEmail("");
-    setPassword("");
-    setError("");
-
-    // Redireciona para a página inicial (você pode implementar isso quando tiver o roteamento configurado)
-    // navigate("/");
   };
 
   return (
@@ -50,22 +53,22 @@ export default function Login() {
 
           <div className="rounded-md shadow-sm -space-y-px">
             <div className="relative">
-              <label htmlFor="email-address" className="sr-only">
-                Email
+              <label htmlFor="username" className="sr-only">
+                Usuário
               </label>
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <FaEnvelope className="h-5 w-5 text-gray-400" />
               </div>
               <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
+                id="username"
+                name="username"
+                type="text"
+                autoComplete="username"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Usuário"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
             <div className="relative">
@@ -92,9 +95,10 @@ export default function Login() {
           <div>
             <button
               type="submit"
+              disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Entrar
+              {loading ? "Entrando..." : "Entrar"}
             </button>
           </div>
         </form>

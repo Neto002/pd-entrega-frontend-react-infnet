@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa";
+import PropTypes from "prop-types";
+import { getCategories } from "../../services/productsService";
+import { capitalize } from "../../util/format";
 
-export default function ProductFilters({ onFilterChange }) {
-  const [priceRange, setPriceRange] = useState([0, 5000]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+export default function ProductFilters({ onFilterChange, initialCategory }) {
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [selectedCategories, setSelectedCategories] = useState(
+    initialCategory ? [initialCategory] : []
+  );
+  const [categories, setCategories] = useState([]);
 
-  const categories = [
-    "Eletrônicos",
-    "Roupas",
-    "Acessórios",
-    "Casa e Decoração",
-    "Esportes",
-    "Livros",
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (initialCategory) {
+      setSelectedCategories([initialCategory]);
+      onFilterChange({ categories: [initialCategory], priceRange });
+    }
+  }, [initialCategory]);
 
   const handleCategoryChange = (category) => {
     const newCategories = selectedCategories.includes(category)
@@ -51,7 +64,7 @@ export default function ProductFilters({ onFilterChange }) {
                 onChange={() => handleCategoryChange(category)}
                 className="mr-2"
               />
-              {category}
+              {capitalize(category)}
             </label>
           ))}
         </div>
@@ -64,8 +77,8 @@ export default function ProductFilters({ onFilterChange }) {
           <input
             type="range"
             min="0"
-            max="5000"
-            step="100"
+            max="1000"
+            step="50"
             value={priceRange[1]}
             onChange={handlePriceChange}
             className="w-full"
@@ -79,3 +92,8 @@ export default function ProductFilters({ onFilterChange }) {
     </div>
   );
 }
+
+ProductFilters.propTypes = {
+  onFilterChange: PropTypes.func.isRequired,
+  initialCategory: PropTypes.string,
+};
