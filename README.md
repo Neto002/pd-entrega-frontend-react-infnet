@@ -1,12 +1,116 @@
-# React + Vite
+# E-commerce React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é um e-commerce desenvolvido com React, utilizando as mais modernas práticas de desenvolvimento frontend.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologias Utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Redux Toolkit
+- React Router
+- Tailwind CSS
+- Axios
+- React Hot Toast
+- Context API
 
-## Expanding the ESLint configuration
+## 📋 Funcionalidades
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Autenticação**
+
+  - Login/Logout
+  - Rotas protegidas
+  - Persistência de sessão
+
+- **Produtos**
+
+  - Listagem de produtos
+  - Filtros por categoria
+  - Filtros por preço
+
+- **Carrinho**
+
+  - Adicionar/Remover produtos
+  - Atualizar quantidade
+  - Persistência no localStorage
+  - Cálculo de totais
+
+- **Interface**
+  - Design responsivo
+  - Navegação intuitiva
+  - Feedback visual com toasts
+
+## 🛠️ Instalação
+
+1. Clone o repositório
+
+```bash
+git clone [https://github.com/Neto002/pd-entrega-frontend-react-infnet]
+```
+
+2. Instale as dependências
+
+```bash
+npm install
+```
+
+3. Inicie o projeto
+
+```bash
+npm run dev
+```
+
+## 📝 Nota para Avaliação
+
+Para testar o login, utilize qualquer um dos seguintes usuários da API FakeStore:
+
+```json
+[
+  {
+    "username": "johnd",
+    "password": "m38rmF$"
+  },
+  {
+    "username": "mor_2314",
+    "password": "83r5^_"
+  },
+  {
+    "username": "kevinryan",
+    "password": "kev02937@"
+  },
+  {
+    "username": "donero",
+    "password": "ewedon"
+  },
+  {
+    "username": "derek",
+    "password": "jklg*_56"
+  }
+]
+```
+
+Caso queira ver a resposta na íntegra, acesse o link [https://fakestoreapi.com/users]
+
+## 👨‍🎓 Sobre o Projeto
+
+Este projeto foi desenvolvido como parte da avaliação final da disciplina de Desenvolvimento Frontend do curso de Pós-graduação em Desenvolvimento Fullstack do Instituto Infnet.
+
+O objetivo foi criar uma aplicação e-commerce completa, demonstrando o domínio das tecnologias e conceitos aprendidos durante o curso, incluindo:
+
+- Gerenciamento de estado (Redux e Context API)
+- Roteamento e navegação
+- Autenticação e autorização
+- Design responsivo
+- Integração com APIs
+- Boas práticas de desenvolvimento React
+
+## 📚 Estrutura do Projeto
+
+```
+src/
+  ├── components/     # Componentes reutilizáveis
+  ├── contexts/       # Contextos React
+  ├── pages/         # Páginas da aplicação
+  ├── services/      # Serviços de API
+  ├── store/         # Configuração do Redux
+  ├── util/          # Funções utilitárias
+  └── App.jsx        # Componente principal
+```
