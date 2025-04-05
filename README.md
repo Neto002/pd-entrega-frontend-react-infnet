@@ -87,7 +87,7 @@ Para testar o login, utilize qualquer um dos seguintes usuários da API FakeStor
 ]
 ```
 
-Caso queira ver a resposta na íntegra, acesse o link [https://fakestoreapi.com/users]
+Caso queira ver a resposta na íntegra, acesse o link: https://fakestoreapi.com/users
 
 ## 👨‍🎓 Sobre o Projeto
 
