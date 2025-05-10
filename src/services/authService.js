@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://fakestoreapi.com/auth",
+  baseURL: "http://localhost:3000/auth",
 });
 
 export const login = async (username, password) => {
