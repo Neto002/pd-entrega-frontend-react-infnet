@@ -26,7 +26,7 @@ const Admin = () => {
     price: "",
     stock: "",
     description: "",
-    image: "",
+    image: null,
     category: "",
     rating: { rate: 0, count: 0 },
   });
@@ -35,13 +35,13 @@ const Admin = () => {
     price: "",
     stock: "",
     description: "",
-    image: "",
+    image: null,
     category: "",
     rating: { rate: 0, count: 0 },
   });
   const [editingStock, setEditingStock] = useState(null);
   const [tempStock, setTempStock] = useState("");
-  const [previewImage, setPreviewImage] = useState("");
+  const [previewImage, setPreviewImage] = useState(null);
 
   const fetchProducts = async () => {
     try {
@@ -103,7 +103,7 @@ const Admin = () => {
         price: "",
         stock: "",
         description: "",
-        image: "",
+        image: null,
         category: "",
         rating: { rate: 0, count: 0 },
       });
@@ -150,17 +150,14 @@ const Admin = () => {
   const handleImageChange = (e, isEdit = false) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        if (isEdit) {
-          setEditFormData((prev) => ({ ...prev, image: base64String }));
-        } else {
-          setCreateFormData((prev) => ({ ...prev, image: base64String }));
-        }
-        setPreviewImage(base64String);
-      };
-      reader.readAsDataURL(file);
+      if (isEdit) {
+        setEditFormData((prev) => ({ ...prev, image: file }));
+      } else {
+        setCreateFormData((prev) => ({ ...prev, image: file }));
+      }
+      setPreviewImage(URL.createObjectURL(file));
+      console.log(URL.createObjectURL(file));
+      console.log(file);
     }
   };
 
@@ -170,7 +167,7 @@ const Admin = () => {
       price: "",
       stock: "",
       description: "",
-      image: "",
+      image: null,
       category: "",
       rating: { rate: 0, count: 0 },
     });
@@ -287,7 +284,7 @@ const Admin = () => {
                     <img
                       src={
                         previewImage.startsWith("http") ||
-                        previewImage.startsWith("data")
+                        previewImage.startsWith("blob")
                           ? previewImage
                           : `http://localhost:3000/uploads/${previewImage}`
                       }
@@ -392,7 +389,7 @@ const Admin = () => {
                     <img
                       src={
                         previewImage.startsWith("http") ||
-                        previewImage.startsWith("data")
+                        previewImage.startsWith("blob")
                           ? previewImage
                           : `http://localhost:3000/uploads/${previewImage}`
                       }
