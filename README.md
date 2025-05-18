@@ -58,37 +58,6 @@ npm install
 npm run dev
 ```
 
-## 📝 Nota para Avaliação
-
-Para testar o login, utilize qualquer um dos seguintes usuários da API FakeStore:
-
-```json
-[
-  {
-    "username": "johnd",
-    "password": "m38rmF$"
-  },
-  {
-    "username": "mor_2314",
-    "password": "83r5^_"
-  },
-  {
-    "username": "kevinryan",
-    "password": "kev02937@"
-  },
-  {
-    "username": "donero",
-    "password": "ewedon"
-  },
-  {
-    "username": "derek",
-    "password": "jklg*_56"
-  }
-]
-```
-
-Caso queira ver a resposta na íntegra, acesse o link: https://fakestoreapi.com/users
-
 ## 👨‍🎓 Sobre o Projeto
 
 Este projeto foi desenvolvido como parte da avaliação final da disciplina de Desenvolvimento Frontend do curso de Pós-graduação em Desenvolvimento Fullstack do Instituto Infnet.
