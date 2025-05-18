@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
-import { store } from "../../store";
 
 const token = localStorage.getItem("token");
 
