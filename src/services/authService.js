@@ -1,12 +1,8 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:3000/auth",
-});
+import api from "./axiosConfig";
 
 export const login = async (username, password) => {
   try {
-    const response = await api.post("/login", {
+    const response = await api.post("/auth/login", {
       username,
       password,
     });

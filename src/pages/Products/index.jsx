@@ -7,21 +7,35 @@ import ProductFilters from "../../components/ProductFilters";
 import { getProducts } from "../../services/productsService";
 import { capitalize } from "../../util/format";
 import { useSelector } from "react-redux";
+
 export default function Products() {
   const { categoria } = useParams();
   const { addToCart } = useCart();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const [products, setProducts] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+
   const [filters, setFilters] = useState({
     categories: categoria ? [categoria] : [],
     priceRange: [0, 1000],
   });
 
-  const [products, setProducts] = useState([]);
-
   useEffect(() => {
     const fetchProducts = async () => {
       const data = await getProducts();
       setProducts(data);
+
+      // Calcula o preço mínimo e máximo dos produtos
+      if (data.length > 0) {
+        const prices = data.map((product) => product.price);
+        const minPrice = Math.floor(Math.min(...prices));
+        const maxPrice = Math.ceil(Math.max(...prices));
+        setPriceRange([minPrice, maxPrice]);
+        setFilters((prev) => ({
+          ...prev,
+          priceRange: [minPrice, maxPrice],
+        }));
+      }
     };
 
     fetchProducts();
@@ -74,6 +88,8 @@ export default function Products() {
           <ProductFilters
             onFilterChange={setFilters}
             initialCategory={categoria}
+            minPrice={priceRange[0]}
+            maxPrice={priceRange[1]}
           />
         </div>
 
@@ -94,7 +110,11 @@ export default function Products() {
               >
                 <div className="h-48 overflow-hidden">
                   <img
-                    src={product.image}
+                    src={
+                      product.image.startsWith("http")
+                        ? product.image
+                        : `http://localhost:3000/uploads/${product.image}`
+                    }
                     alt={product.title}
                     className="w-full h-full object-fill"
                   />

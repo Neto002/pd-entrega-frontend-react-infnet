@@ -4,8 +4,16 @@ import PropTypes from "prop-types";
 import { getCategories } from "../../services/productsService";
 import { capitalize } from "../../util/format";
 
-export default function ProductFilters({ onFilterChange, initialCategory }) {
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+export default function ProductFilters({
+  onFilterChange,
+  initialCategory,
+  minPrice,
+  maxPrice,
+}) {
+  const [priceRange, setPriceRange] = useState([
+    minPrice || 0,
+    maxPrice || 1000,
+  ]);
   const [selectedCategories, setSelectedCategories] = useState(
     initialCategory ? [initialCategory] : []
   );
@@ -27,6 +35,10 @@ export default function ProductFilters({ onFilterChange, initialCategory }) {
     }
   }, [initialCategory]);
 
+  useEffect(() => {
+    setPriceRange([minPrice || 0, maxPrice || 1000]);
+  }, [minPrice, maxPrice]);
+
   const handleCategoryChange = (category) => {
     const newCategories = selectedCategories.includes(category)
       ? selectedCategories.filter((c) => c !== category)
@@ -37,7 +49,7 @@ export default function ProductFilters({ onFilterChange, initialCategory }) {
   };
 
   const handlePriceChange = (e) => {
-    const newPriceRange = [0, parseInt(e.target.value)];
+    const newPriceRange = [minPrice || 0, parseInt(e.target.value)];
     setPriceRange(newPriceRange);
     onFilterChange({
       categories: selectedCategories,
@@ -76,15 +88,15 @@ export default function ProductFilters({ onFilterChange, initialCategory }) {
         <div className="space-y-2">
           <input
             type="range"
-            min="0"
-            max="1000"
-            step="50"
+            min={minPrice || 0}
+            max={maxPrice || 1000}
+            step="1"
             value={priceRange[1]}
             onChange={handlePriceChange}
             className="w-full"
           />
           <div className="flex justify-between text-sm text-gray-600">
-            <span>R$ 0</span>
+            <span>R$ {minPrice?.toFixed(2) || "0.00"}</span>
             <span>R$ {priceRange[1].toFixed(2)}</span>
           </div>
         </div>
@@ -96,4 +108,6 @@ export default function ProductFilters({ onFilterChange, initialCategory }) {
 ProductFilters.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
   initialCategory: PropTypes.string,
+  minPrice: PropTypes.number,
+  maxPrice: PropTypes.number,
 };

@@ -7,29 +7,57 @@ import {
   loginFailure,
 } from "../../store/slices/authSlice";
 import { login } from "../../services/authService";
+import { signup } from "../../services/usersService";
 import toast from "react-hot-toast";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 
 export default function Login() {
+  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isLogin && password !== confirmPassword) {
+      toast.error("As senhas não coincidem");
+      return;
+    }
+
     dispatch(loginStart());
 
     try {
-      const data = await login(username, password);
-      dispatch(loginSuccess(data));
-      toast.success("Login realizado com sucesso!");
-      navigate("/");
+      if (isLogin) {
+        const data = await login(username, password);
+        dispatch(loginSuccess(data));
+        toast.success("Login realizado com sucesso!");
+        navigate("/");
+      } else {
+        await signup(username, password);
+        toast.success(
+          "Cadastro realizado com sucesso! Faça login para continuar."
+        );
+        setIsLogin(true);
+        setPassword("");
+        setConfirmPassword("");
+      }
     } catch (error) {
       dispatch(loginFailure(error.message));
-      toast.error(error.message || "Erro ao fazer login");
+      toast.error(
+        error.message || (isLogin ? "Erro ao fazer login" : "Erro ao cadastrar")
+      );
     }
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setUsername("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
   return (
@@ -37,7 +65,7 @@ export default function Login() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Entre na sua conta
+            {isLogin ? "Entre na sua conta" : "Crie sua conta"}
           </h2>
         </div>
 
@@ -82,23 +110,63 @@ export default function Login() {
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete={isLogin ? "current-password" : "new-password"}
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {!isLogin && (
+              <div className="relative">
+                <label htmlFor="confirmPassword" className="sr-only">
+                  Confirmar Senha
+                </label>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Confirmar Senha"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+            )}
           </div>
 
-          <div>
+          <div className="flex flex-col space-y-4">
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading && !isLogin}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              {loading ? "Entrando..." : "Entrar"}
+              {loading && !isLogin
+                ? "Processando..."
+                : isLogin
+                ? "Entrar"
+                : "Cadastrar"}
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              {isLogin ? (
+                <>
+                  <FaUserPlus className="mr-2 h-5 w-5" />
+                  Criar nova conta
+                </>
+              ) : (
+                "Já tenho uma conta"
+              )}
             </button>
           </div>
         </form>

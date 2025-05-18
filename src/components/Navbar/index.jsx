@@ -20,6 +20,8 @@ export default function Navbar() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [categories, setCategories] = useState([]);
 
+  console.log(isAuthenticated);
+
   useEffect(() => {
     const fetchCategories = async () => {
       const data = await getCategories();
@@ -117,6 +119,15 @@ export default function Navbar() {
             >
               Produtos
             </Link>
+
+            {isAuthenticated && (
+              <Link
+                to="/admin"
+                className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Admin
+              </Link>
+            )}
           </div>
 
           {/* Carrinho, Login e Tema - Desktop */}
@@ -197,6 +208,15 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
+
+              {isAuthenticated && (
+                <Link
+                  to="/admin"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                >
+                  Admin
+                </Link>
+              )}
 
               {/* Carrinho, Login e Tema Mobile */}
               <div className="flex items-center space-x-4 px-3 py-2">

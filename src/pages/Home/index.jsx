@@ -15,6 +15,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const { addToCart } = useCart();
+
   // Dados de exemplo para o carousel
   const carouselImages = [
     {
@@ -117,7 +118,11 @@ export default function Home() {
               >
                 <div className="h-48 overflow-hidden">
                   <img
-                    src={product.image}
+                    src={
+                      product.image.startsWith("http")
+                        ? product.image
+                        : `http://localhost:3000/uploads/${product.image}`
+                    }
                     alt={product.title}
                     className="w-full h-full object-fill"
                   />

@@ -1,9 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { jwtDecode } from "jwt-decode";
+import { store } from "../../store";
+
+const token = localStorage.getItem("token");
+
+// Verifica se o token expirou e se o usuário está autenticado
+if (token) {
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp < Date.now() / 1000) {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  }
+}
 
 const initialState = {
   user: null,
-  token: localStorage.getItem("token"),
-  isAuthenticated: false,
+  token: token,
+  isAuthenticated: !!token,
   loading: false,
   error: null,
 };
